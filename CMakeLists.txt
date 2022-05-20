@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.0)
 project(bmn_magnetic_field)
 
 find_package(ROOT REQUIRED COMPONENTS RIO Tree)
-find_package(Boost REQUIRED COMPONENTS program_options)
 
 include_directories(
         ${CMAKE_SOURCE_DIR}
@@ -32,4 +31,4 @@ add_library(Field SHARED ${SOURCES} G__Field.cxx )
 target_link_libraries(Field PRIVATE ROOT::RIO)
 
 add_executable(process src/main.cc)
-target_link_libraries(process ROOT::EG ROOT::RIO Boost::program_options Field)
+target_link_libraries(process ROOT::EG ROOT::RIO Field)
