@@ -5,10 +5,8 @@
 void draw_2dgraph(){
   std::vector<std::string> v_in_file_names{"/home/mikhail/bmn_magnetic_field/data/2022x05x17_test_4_1900A_24mm_2_scan_hall_50_45_snake1_CW.csv",
                                            "/home/mikhail/bmn_magnetic_field/data/2022x05x17_test_4_1900A_24mm_2_scan_hall_50_45_snake_y1075_CW.csv" };
-//  std::vector<std::string> v_in_file_names{"/home/mikhail/bmn_magnetic_field/data/2022x05x17_test1_CW.csv" };
   std::vector<double> v_start_y{0.0, 1100};
   std::string out_file_name = "2022x05x17_test_4_1900A_24mm_2_scan_hall_50_45_snake1_CW.root";
-//  std::string out_file_name = "2022x05x17_test1_CW.root";
 
   std::vector<FieldPlane> planes;
   for( auto name : v_in_file_names ){
@@ -30,7 +28,7 @@ void draw_2dgraph(){
   plane = plane.VoltageToFieldBz( 23.16, 136.5 );
 
   plane = plane / 1'000;
-  plane.ShiftX( -1459.41-9.83674 );
+//  plane.ShiftX( -1459.41-9.83674 );
 
   auto file_out = TFile::Open( out_file_name.c_str(), "recreate" );
 
