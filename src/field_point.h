@@ -7,6 +7,7 @@
 
 #include <cmath>
 
+// The basic structure to store the field point
 struct field_point{
   // coordinates (mm)
   double x;
@@ -17,10 +18,11 @@ struct field_point{
   double by;
   double bz;
 };
-
+// Functors to access the field coordinate. They are implemented to be given as a function's argument
 struct x_coordinate{ double operator()(field_point p) const { return p.x; }; };
 struct y_coordinate{ double operator()(field_point p) const { return p.y; }; };
 struct z_coordinate{ double operator()(field_point p) const { return p.z; }; };
+// Functors to check if the coordinate is in x+-dx.
 struct x_equals{
   double x;
   double dx;
@@ -42,6 +44,7 @@ struct z_equals{
     return fabs(p.z - z) < dz;
   };
 };
+// Functors to access the field components
 struct bx_field{ double operator()(field_point p){ return p.bx; }; };
 struct by_field{ double operator()(field_point p){ return p.by; }; };
 struct bz_field{ double operator()(field_point p){ return p.bz; }; };

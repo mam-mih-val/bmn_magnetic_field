@@ -12,14 +12,12 @@ include_directories(
 
 set(SOURCES
         src/data_parser.cc
-        src/data_set.cc
         src/field_plane.cc
         src/field_point.cc
         )
 
 set(HEADERS
         src/data_parser.h
-        src/data_set.h
         src/field_plane.h
         src/field_point.h
         )

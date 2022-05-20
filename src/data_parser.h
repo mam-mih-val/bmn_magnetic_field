@@ -16,7 +16,14 @@
 
 class DataParser {
 public:
+  // The method reads the field points from the data
   static std::vector<field_point> ParseData( std::string file_name );
+  // The method sorts the large heap of field points into smaller ones so that
+  // each heap will be unique on this coordinate.
+  // { x1, x1, x1, x2, x2, x2, ... } ->
+  // {x1, x2, ... }
+  // {x1, x2, ... }
+  // {x1, x2, ... }
   template <typename T>
   static std::vector<std::vector<field_point>> SortPoints( const std::vector<field_point>& points, T coordinate ){
     std::vector<std::vector<field_point>> sorted_points;

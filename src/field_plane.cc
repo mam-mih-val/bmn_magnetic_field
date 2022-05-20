@@ -193,36 +193,3 @@ FieldPlane FieldPlane::VoltageToFieldBz(double p0, double p1){
   }
   return FieldPlane(points);
 }
-
-std::vector<std::vector<double>> FieldPlane::VectorCorrelation(){
-  std::vector<std::vector<double>> matrix{
-      {0.0, 0.0, 0.0},
-      {0.0, 0.0, 0.0},
-      {0.0, 0.0, 0.0}
-  };
-  int n=0;
-  for( int idx=0; idx < points_.size()-1; ++idx ){
-    auto p1 = points_[idx];
-    for( auto idy = idx+1; idy < points_.size(); idy++ ){
-      auto p2 = points_[idy];
-      matrix[0][0] += p1.bx * p2.bx;
-      matrix[0][1] += p1.bx * p2.by;
-      matrix[0][2] += p1.bx * p2.bz;
-
-      matrix[1][0] += p1.by * p2.bx;
-      matrix[1][1] += p1.by * p2.by;
-      matrix[1][2] += p1.by * p2.bz;
-
-      matrix[2][0] += p1.bz * p2.bx;
-      matrix[2][1] += p1.bz * p2.by;
-      matrix[2][2] += p1.bz * p2.bz;
-      n++;
-    }
-  }
-  for( auto& row : matrix ){
-    for( auto& x : row ){
-      x /= n;
-    }
-  }
-  return matrix;
-}

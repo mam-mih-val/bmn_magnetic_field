@@ -28,12 +28,14 @@ public:
   FieldPlane() {}
   explicit FieldPlane(const std::vector<field_point> &points) : points_(points) {}
   const std::vector<field_point> &GetPoints() const { return points_; }
+  // Use the functors defined in field_point.h or write custom ones
   template <typename T>
   std::vector<field_point> SelectPoints(T selection) const {
     std::vector<field_point> selected;
     for( auto p : points_ ){ if( selection(p) ){ selected.push_back(p); } }
     return selected;
   }
+  // Use the functors defined in field_point.h or write custom ones
   template <typename T>
   TGraph2D *GetPlaneGraph( const std::string& name, const std::string& title, T value ){
       auto graph = new TGraph2D(points_.size());
@@ -104,12 +106,13 @@ public:
     }
     return result;
   }
-  std::vector<std::vector<double>> VectorCorrelation();
 
+  // Calculation of the field is performed with linear function: B = p0 + p1*U
   FieldPlane VoltageToFieldBx(double p0, double p1);
   FieldPlane VoltageToFieldBy(double p0, double p1);
   FieldPlane VoltageToFieldBz(double p0, double p1);
 
+  // Sorts the points in the increasing order for the given coordinate
   template <typename X>
   inline std::vector<field_point> Sort( X coordinate ){
     auto points = points_;
@@ -130,20 +133,6 @@ public:
   friend FieldPlane operator/( const FieldPlane&, double );
   friend FieldPlane operator/( double, const FieldPlane& );
 
-  std::vector<TPolyLine3D*> Vectors(double ratio=0.1){
-    std::vector<TPolyLine3D*> vectors;
-    int i=0;
-    for( auto p : points_ ){
-      std::vector<double> x{ p.x, p.x + 10*p.bx };
-      std::vector<double> y{ p.y, p.y + 10*p.by };
-      std::vector<double> z{ p.z, p.z + 10*p.bz };
-      auto rand = gRandom->Uniform(1);
-      if( rand < ratio )
-        vectors.emplace_back( new TPolyLine3D( x.size(), x.data(), y.data(), z.data() ) );
-      ++i;
-    }
-    return vectors;
-  }
   template <typename X, typename Y, typename Bx, typename By>
   std::vector<TArrow*> GetFieldImage( double x_scale, X x_coordinate,
                                       double y_scale, Y y_coordinate,
