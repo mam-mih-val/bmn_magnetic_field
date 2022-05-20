@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 project(bmn_magnetic_field)
 
-set(CMAKE_CXX_STANDARD 17)
-
 find_package(ROOT REQUIRED COMPONENTS RIO Tree)
 find_package(Boost REQUIRED COMPONENTS program_options)
 
