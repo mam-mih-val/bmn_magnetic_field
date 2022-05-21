@@ -7,12 +7,11 @@
 
 #include <string>
 #include <utility>
+#include <algorithm>
 #include <vector>
 #include <stdexcept>
 
-
 #include "field_point.h"
-#include "data_set.h"
 
 class DataParser {
 public:
