@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <limits>
+#include <cassert>
 
 #include "field_point.h"
 
@@ -17,6 +18,7 @@ class DataParser {
 public:
   // The method reads the field points from the data
   static std::vector<field_point> ParseData( std::string file_name );
+  static std::vector<field_point> ParseOldData( std::string file_name );
   // The method sorts the large heap of field points into smaller ones so that
   // each heap will be unique on this coordinate.
   // { x1, x1, x1, x2, x2, x2, ... } ->
@@ -65,7 +67,6 @@ public:
 private:
   DataParser() = default;
   ~DataParser() = default;
-
 };
 
 #endif // BMN_MAGNETIC_FIELD_SRC_DATA_PARSER_H_
