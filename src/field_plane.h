@@ -20,8 +20,25 @@
 class FieldPlane{
 public:
   FieldPlane() {}
-  explicit FieldPlane(const std::vector<field_point> &points) : points_(points) {}
-  const std::vector<field_point> &GetPoints() const { return points_; }
+  explicit FieldPlane(const std::vector<field_point> &points) : points_(points) {
+    this->FillUniqueCoordinates();
+  }
+  [[nodiscard]] const std::vector<field_point> &GetPoints() const { return points_; }
+  [[nodiscard]] const std::set<double> &GetUniqueXCoordinates() {
+    if( x_coordinates_.empty() )
+      this->FillUniqueCoordinates();
+    return x_coordinates_;
+  }
+  [[nodiscard]] const std::set<double> &GetUniqueYCoordinates() {
+    if( y_coordinates_.empty() )
+      this->FillUniqueCoordinates();
+    return y_coordinates_;
+  }
+  [[nodiscard]] const std::set<double> &GetUniqueZCoordinates() {
+    if( z_coordinates_.empty() )
+      this->FillUniqueCoordinates();
+    return z_coordinates_;
+  }
   // Use the functors defined in field_point.h or write custom ones
   template <typename T>
   std::vector<field_point> SelectPoints(T selection) const {
@@ -76,12 +93,13 @@ public:
       graph->SetTitle(title.c_str());
       return graph;
   };
-  void ShiftX(double shift){ for( auto &p : points_ ){ p.x+=shift; } }
-  void ShiftY(double shift){ for( auto &p : points_ ){ p.y+=shift; } }
+  void ShiftX(double shift){ for( auto &p : points_ ){ p.x+=shift; } this->FillUniqueCoordinates(); }
+  void ShiftY(double shift){ for( auto &p : points_ ){ p.y+=shift; } this->FillUniqueCoordinates(); }
   void Append(const FieldPlane& other){
     for( auto &p : other.points_ ){
       points_.push_back(p);
     }
+    this->FillUniqueCoordinates();
   }
   template <typename X, typename V>
   double Integrate( X axis, std::vector<double> range, V function ){
@@ -165,7 +183,16 @@ private:
     bin_edges.insert( bin_edges.begin(), x_values.front()-dx );
     return bin_edges;
   }
-
+  void FillUniqueCoordinates(){
+    for( auto p : points_ ){
+      x_coordinates_.insert(p.x);
+      y_coordinates_.insert(p.y);
+      z_coordinates_.insert(p.z);
+    }
+  }
+  std::set<double> x_coordinates_;
+  std::set<double> y_coordinates_;
+  std::set<double> z_coordinates_;
   std::vector<field_point> points_;
 };
 
