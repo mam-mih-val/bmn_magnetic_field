@@ -1,9 +1,9 @@
-# BM@N Magnetic field visializer
+# BM@N Magnetic field visualizer
 This is a library for visualizing measured magnetic field.
 
 ## Installation
 ### Requirements:
-* Installed ROOT of version 6.18 or higher
+* Installed ROOT of version 6.18 or higher built with C++17 (you can download pre-built version on https://root.cern/releases/release-62404/)
 * CMake version 3.0 or higher
 
 ### Building from the sources
@@ -21,7 +21,7 @@ make -j2
 ### Built-in macro
 There already are several macros for magnetic field visualization:
 #### draw_2dgraph.cc
-is capable of drawing 2-dimensinal pictures for each component as well 1-dimensional projections on X-axis. It dumps all of the results into root-file.
+is capable of drawing 2-dimensinal pictures for each component as well 1-dimensional projections on X-axis. It dumps all the results into root-file.
 #### draw_2dgraph.cc
 is used for visualization field vectors as arrows. The output is picture.
 #### Any custom macro you wish
