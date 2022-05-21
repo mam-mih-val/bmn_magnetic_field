@@ -4,12 +4,11 @@
 
 void draw_2dgraph(){
   // The vector of input file names
-  std::vector<std::string> v_in_file_names{"/home/mikhail/bmn_magnetic_field/data/2022x05x17_test_4_1900A_24mm_2_scan_hall_50_45_snake1_CW.csv",
-                                           "/home/mikhail/bmn_magnetic_field/data/2022x05x17_test_4_1900A_24mm_2_scan_hall_50_45_snake_y1075_CW.csv" };
+  std::vector<std::string> v_in_file_names{"/home/mikhail/bmn_magnetic_field/data/2022x05x20_1900A_hall_93_CW.csv",};
   // The vector of start positions of the measuring head
   std::vector<double> v_start_y{0.0, 1100};
   // The output file will be named as follows
-  std::string out_file_name = "2022x05x17_test_4_1900A_24mm_2_scan_hall_50_45_snake1_CW.root";
+  std::string out_file_name = "2022x05x20_1900A_hall_93_CW.root";
 
   // Parsing the input files
   std::vector<FieldPlane> planes;
@@ -56,6 +55,7 @@ void draw_2dgraph(){
     // Getting the vector of points with current y coordinate with tolerance of 10 mm (because '==' comparison doesn't make sence for doubles)
     auto slice = FieldPlane(plane.SelectPoints( y_equals{y, 10} ));
     // Converting the points into drawable TGraph
+    auto int_y = int(y);
     auto proj_bx = slice.GetGraph( "y_"+std::to_string(int_y), ";x (mm); B_{x} (kGs)", x_coordinate(), bx_field() );
     auto proj_by = slice.GetGraph( "y_"+std::to_string(int_y), ";x (mm); B_{y} (kGs)", x_coordinate(), by_field() );
     auto proj_bz = slice.GetGraph( "y_"+std::to_string(int_y), ";x (mm); B_{z} (kGs)", x_coordinate(), bz_field() );
