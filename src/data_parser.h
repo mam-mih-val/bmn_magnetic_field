@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <vector>
 #include <stdexcept>
+#include <limits>
 
 #include "field_point.h"
 

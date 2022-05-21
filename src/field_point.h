@@ -6,7 +6,6 @@
 #define BMN_MAGNETIC_FIELD_SRC_FIELD_POINT_H_
 
 #include <cmath>
-#include <limits>
 
 // The basic structure to store the field point
 struct field_point{
