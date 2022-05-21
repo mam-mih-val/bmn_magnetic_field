@@ -10,7 +10,6 @@
 #pragma link off all typedef;
 
 #pragma link C++ class DataParser;
-#pragma link C++ class DataSet;
 #pragma link C++ class FieldPlane;
 #pragma link C++ struct field_point;
 #pragma link C++ struct x_coordinate;

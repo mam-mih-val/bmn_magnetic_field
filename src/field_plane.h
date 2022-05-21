@@ -5,21 +5,15 @@
 #ifndef BMN_MAGNETIC_FIELD_SRC_FIELD_PLANE_H_
 #define BMN_MAGNETIC_FIELD_SRC_FIELD_PLANE_H_
 
-#include <utility>
 #include <vector>
 #include <stdexcept>
+#include <set>
 
 #include <TGraph2D.h>
 #include <TGraph.h>
 #include <TH2F.h>
 #include <TRandom.h>
-
-#include <TPolyLine3D.h>
 #include <TArrow.h>
-
-#include <iostream>
-#include <set>
-
 
 #include "field_point.h"
 

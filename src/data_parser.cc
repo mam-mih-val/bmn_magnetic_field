@@ -4,7 +4,6 @@
 
 #include <fstream>
 #include <sstream>
-#include <algorithm>
 #include <cmath>
 #include "data_parser.h"
 

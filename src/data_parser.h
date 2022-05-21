@@ -6,9 +6,8 @@
 #define BMN_MAGNETIC_FIELD_SRC_DATA_PARSER_H_
 
 #include <string>
-#include <utility>
-#include <algorithm>
 #include <vector>
+#include <algorithm>
 #include <stdexcept>
 #include <limits>
 
