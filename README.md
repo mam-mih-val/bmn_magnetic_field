@@ -3,8 +3,13 @@ This is a library for visualizing measured magnetic field.
 
 ## Installation
 ### Requirements:
+#### C++
 * Installed ROOT of version 6.18 or higher built with C++17 (you can download pre-built version on https://root.cern/releases/release-62404/)
 * CMake version 3.0 or higher
+#### Python
+* python3
+* matplotlib
+* numpy
 
 ### Building from the sources
 ````
@@ -39,4 +44,13 @@ For example to perform the visualization of the measured data:
 The output is the *.root file, which you can open with
 ````
 root -l output.root
+````
+## Python
+The functionality of field visualization is implemented in python as well. To fix the missing dependencies use pip:
+````
+pip install matplotlib
+````
+### Usage
+````
+/path/to/your/bmn_magnetic_field/python/draw.sh -i <file1>,<file2>,...,<fileN> -s <start_pos1>,<start_pos2>,...,<start_posN> -o <output_file.pdf>
 ````
