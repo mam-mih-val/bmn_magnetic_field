@@ -24,6 +24,14 @@ public:
     this->FillUniqueCoordinates();
   }
   [[nodiscard]] const std::vector<field_point> &GetPoints() const { return points_; }
+  template <typename X>
+  [[nodiscard]] std::set<double> GetUniqueCoordinates(X coordinate) const {
+    std::set<double> coordinates;
+    for( auto p : points_ ){
+      coordinates.insert(coordinate(p));
+    }
+    return coordinates;
+  }
   [[nodiscard]] std::set<double> GetUniqueXCoordinates() {
     std::set<double> x_coordinates;
     for( auto p : points_ ){
@@ -31,7 +39,7 @@ public:
     }
     return x_coordinates;
   }
-  [[nodiscard]] std::set<double> GetUniqueYCoordinates() {
+  [[nodiscard]] std::set<double> GetUniqueYCoordinates() const {
     std::set<double> y_coordinates;
     for( auto p : points_ ){
       y_coordinates.insert(p.y);
@@ -61,7 +69,7 @@ public:
   }
   // Use the functors defined in field_point.h or write custom ones
   template <typename T>
-  TGraph2D *GetPlaneGraph( const std::string& name, const std::string& title, T value ){
+  TGraph2D *GetPlaneGraph( const std::string& name, const std::string& title, T value ) const {
       auto graph = new TGraph2D(points_.size());
       int idx=0;
       for( auto p : points_ ){
@@ -76,7 +84,7 @@ public:
       return graph;
   };
   template <typename T>
-  TH2F *GetPlaneHisto( const std::string& name, const std::string& title, T value ){
+  TH2F *GetPlaneHisto( const std::string& name, const std::string& title, T value ) const {
     auto x_axis = GetAxis(x_coordinate());
     auto y_axis = GetAxis(y_coordinate());
     auto histo = new TH2F(name.data(), title.data(),
@@ -180,7 +188,7 @@ public:
 
 private:
   template <typename X>
-  std::vector<double> GetAxis( X coordinate ){
+  [[nodiscard]] std::vector<double> GetAxis( X coordinate ) const {
     std::set<double> x_set;
     for( auto p : points_ )
       x_set.insert( coordinate(p) );

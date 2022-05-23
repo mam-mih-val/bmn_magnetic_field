@@ -11,6 +11,7 @@
 
 #pragma link C++ class DataParser;
 #pragma link C++ class FieldPlane;
+#pragma link C++ class Visualizer;
 #pragma link C++ struct field_point;
 #pragma link C++ struct x_coordinate;
 #pragma link C++ struct y_coordinate;
