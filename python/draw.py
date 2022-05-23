@@ -11,34 +11,45 @@ import field_point
 import field_plane
 from matplotlib.backends.backend_pdf import PdfPages
 
+
 def main(argv):
     inputfile = ''
     outputfile = ''
-    startpos=''
+    startpos = ''
     try:
-        opts, args = getopt.getopt(argv,"hi:o:s:",["ifile=","ofile=","start-position"])
+        opts, args = getopt.getopt(argv, "hi:o:s:", ["ifile=", "ofile=", "start-position"])
     except getopt.GetoptError:
         print('Error, use: draw.py -i <inputfile> -o <outputfile>')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-                print('draw.py -i <inputfile> -o <outputfile>')
-                sys.exit()
+            print('draw.py -i <inputfile> -o <outputfile>')
+            sys.exit()
         elif opt in ("-i", "--ifile"):
-                inputfile = arg
+            inputfile = arg
         elif opt in ("-o", "--ofile"):
-                outputfile = arg
+            outputfile = arg
         elif opt in ("-s", "--start-position"):
-                startpos = arg
+            startpos = arg
     input_files = inputfile.split(",")
     start_pos = startpos.split(",")
 
     plane = field_plane.plane([])
+    shift = 0
     for i in range(0, len(input_files)):
         points = data_parser.parse_data(input_files[i])
         temp_plane = field_plane.plane(points)
-        temp_plane.shift_y(float(start_pos[i]))
-        plane.points+=temp_plane.points
+        unique_y = plane.unique_coordinates(field_point.y_coordinate())
+        unique_y = sorted(unique_y)
+        if i > 0:
+            shift = unique_y[-1]
+        temp_plane.shift_y(float(shift))
+        if len(input_files) > 1:
+            plane = plane.delete_points(field_point.y_equals(shift))
+        plane.points += temp_plane.points
+
+    for p in plane.select_points(field_point.y_equals(5075)).points:
+        p.print()
 
     plane = plane * 1000.0
     plane.voltage_to_field_bx(23.16, 136.5)
@@ -47,11 +58,11 @@ def main(argv):
     plane = plane / 1000.0
     unique_y = plane.unique_coordinates(field_point.y_coordinate())
     unique_y = sorted(unique_y)
-    x_values = plane.get_values( field_point.x_coordinate() )
-    y_values = plane.get_values( field_point.y_coordinate() )
-    bx_values = plane.get_values( field_point.bx_field() )
-    by_values = plane.get_values( field_point.by_field() )
-    bz_values = plane.get_values( field_point.bz_field() )
+    x_values = plane.get_values(field_point.x_coordinate())
+    y_values = plane.get_values(field_point.y_coordinate())
+    bx_values = plane.get_values(field_point.bx_field())
+    by_values = plane.get_values(field_point.by_field())
+    bz_values = plane.get_values(field_point.bz_field())
     pp = PdfPages(outputfile)
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
     ax.plot_trisurf(x_values, y_values, bx_values, None, cmap=plt.cm.YlGnBu_r)
@@ -68,7 +79,7 @@ def main(argv):
     ax.set_zlabel('By')
     pp.savefig(fig)
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
-    ax.plot_trisurf(x_values, y_values, bz_values, None, cmap=plt.cm.YlGnBu_r, label = "Bx")
+    ax.plot_trisurf(x_values, y_values, bz_values, None, cmap=plt.cm.YlGnBu_r, label="Bx")
     ax.view_init(elev=45, azim=-120)
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
@@ -76,18 +87,18 @@ def main(argv):
     pp.savefig(fig)
 
     for y in unique_y:
-        slice = plane.select_points( field_point.y_equals(y) )
-        x_values = slice.get_values( field_point.x_coordinate() )
-        bx_values = slice.get_values( field_point.bx_field() )
-        by_values = slice.get_values( field_point.by_field() )
-        bz_values = slice.get_values( field_point.bz_field() )
+        slice = plane.select_points(field_point.y_equals(y))
+        x_values = slice.get_values(field_point.x_coordinate())
+        bx_values = slice.get_values(field_point.bx_field())
+        by_values = slice.get_values(field_point.by_field())
+        bz_values = slice.get_values(field_point.bz_field())
         fig = plt.figure()
-        plt.plot(x_values, bx_values, label = "Bx")
-        plt.plot(x_values, by_values, label = "By")
-        plt.plot(x_values, bz_values, label = "Bz")
+        plt.plot(x_values, bx_values, label="Bx")
+        plt.plot(x_values, by_values, label="By")
+        plt.plot(x_values, bz_values, label="Bz")
         plt.xlabel('x (mm)')
         plt.ylabel('B (kGs)')
-        plt.title('y='+str(y))
+        plt.title('y=' + str(y))
         ax = plt.gca()
         ax.set_xlim([0.0, 3000])
         ax.set_ylim([-6, 15])
@@ -96,5 +107,6 @@ def main(argv):
 
     pp.close()
 
+
 if __name__ == "__main__":
-   main(sys.argv[1:])
+    main(sys.argv[1:])

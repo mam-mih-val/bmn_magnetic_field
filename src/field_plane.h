@@ -24,27 +24,40 @@ public:
     this->FillUniqueCoordinates();
   }
   [[nodiscard]] const std::vector<field_point> &GetPoints() const { return points_; }
-  [[nodiscard]] const std::set<double> &GetUniqueXCoordinates() {
-    if( x_coordinates_.empty() )
-      this->FillUniqueCoordinates();
-    return x_coordinates_;
+  [[nodiscard]] std::set<double> GetUniqueXCoordinates() {
+    std::set<double> x_coordinates;
+    for( auto p : points_ ){
+      x_coordinates.insert(p.x);
+    }
+    return x_coordinates;
   }
-  [[nodiscard]] const std::set<double> &GetUniqueYCoordinates() {
-    if( y_coordinates_.empty() )
-      this->FillUniqueCoordinates();
-    return y_coordinates_;
+  [[nodiscard]] std::set<double> GetUniqueYCoordinates() {
+    std::set<double> y_coordinates;
+    for( auto p : points_ ){
+      y_coordinates.insert(p.y);
+    }
+    return y_coordinates;
   }
-  [[nodiscard]] const std::set<double> &GetUniqueZCoordinates() {
-    if( z_coordinates_.empty() )
-      this->FillUniqueCoordinates();
-    return z_coordinates_;
+  [[nodiscard]] std::set<double> GetUniqueZCoordinates() {
+    std::set<double> z_coordinates;
+    for( auto p : points_ ){
+      z_coordinates.insert(p.z);
+    }
+    return z_coordinates;
   }
+
   // Use the functors defined in field_point.h or write custom ones
   template <typename T>
   std::vector<field_point> SelectPoints(T selection) const {
     std::vector<field_point> selected;
     for( auto p : points_ ){ if( selection(p) ){ selected.push_back(p); } }
     return selected;
+  }
+  template <typename T>
+  void DeletePoints(T selection) {
+    std::vector<field_point> selected;
+    for( auto p : points_ ){ if( !selection(p) ){ selected.push_back(p); } }
+    points_ = selected;
   }
   // Use the functors defined in field_point.h or write custom ones
   template <typename T>

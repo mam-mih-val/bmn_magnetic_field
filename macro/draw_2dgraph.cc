@@ -5,13 +5,32 @@
 void draw_2dgraph(){
   // The vector of input file names
   std::vector<std::string> v_in_file_names{
-      "/home/mikhail/bmn_magnetic_field/data/2022x05x21_1900A_hall_91_CW.csv",
-      "/home/mikhail/bmn_magnetic_field/data/2022x05x21_1900A_hall_91_part2_CW.csv"
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part1_CW.csv",
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part2_CW.csv",
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part3_CW.csv",
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part4_CW.csv",
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part5_CW.csv",
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part6_CW.csv",
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part7_CW.csv",
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part8_CW.csv",
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part9_CW.csv",
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part10_CW.csv",
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part11_CW.csv",
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part12_CW.csv",
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part13_CW.csv",
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part14_CW.csv",
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part15_CW.csv",
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part16_CW.csv",
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part17_CW.csv",
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part18_CW.csv",
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part19_CW.csv",
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part20_CW.csv",
+      "/home/mikhail/bmn_magnetic_field/data/2022x05x22_1900A_hall_71_new_part21_CW.csv",
   };
   // The vector of start positions of the measuring head
-  std::vector<double> v_start_y{0.0, 5050};
+  std::vector<double> v_start_y{0.0, 3750, 4800};
   // The output file will be named as follows
-  std::string out_file_name = "2022x05x21_1900A_hall_91_CW";
+  std::string out_file_name = "71";
 
   // Parsing the input files
   std::vector<FieldPlane> planes;
@@ -22,10 +41,17 @@ void draw_2dgraph(){
   // Merging all the points into one FieldPlane object
   auto plane = planes.front();
   plane.ShiftY( v_start_y.front() );
+  double sum_shift = v_start_y.front();
   for( int i=1; i<planes.size(); i++ ){
     auto p = planes[i];
-    if( i < v_start_y.size() )
-      p.ShiftY( v_start_y[i] );
+    auto unique_y = plane.GetUniqueYCoordinates();
+    for( auto y: unique_y )
+      std::cout << y << " ";
+    sum_shift = *--unique_y.end();
+    plane.DeletePoints( y_equals{*--unique_y.end(), 5} );
+//    if( i < v_start_y.size() )
+    p.ShiftY(sum_shift);
+    std::cout << sum_shift << std::endl;
     plane.Append(p);
   }
 
