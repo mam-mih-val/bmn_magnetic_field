@@ -5,10 +5,14 @@
 #include <fstream>
 #include <sstream>
 #include <cmath>
+#include <iostream>
 #include "data_parser.h"
 
 std::vector<field_point> DataParser::ParseData(std::string file_name) {
+  std::cout << "Reading file: " << file_name << std::endl;
   std::ifstream in_file(file_name);
+  if( !in_file.is_open() )
+    throw std::runtime_error( "Unable to read file " + file_name );
   std::string line;
   size_t line_number=0;
   std::vector<field_point> field_points;
@@ -27,6 +31,7 @@ std::vector<field_point> DataParser::ParseData(std::string file_name) {
     field_points.push_back( {x, y, z, bx, by, bz} );
     line_number++;
   }
+  std::cout << field_points.size() << " points are read" << std::endl;
   return field_points;
 }
 std::vector<field_point> DataParser::ParseOldData(std::string file_name) {

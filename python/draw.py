@@ -15,9 +15,8 @@ from matplotlib.backends.backend_pdf import PdfPages
 def main(argv):
     inputfile = ''
     outputfile = ''
-    startpos = ''
     try:
-        opts, args = getopt.getopt(argv, "hi:o:s:", ["ifile=", "ofile=", "start-position"])
+        opts, args = getopt.getopt(argv, "hi:o:", ["ifile=", "ofile=", "start-position"])
     except getopt.GetoptError:
         print('Error, use: draw.py -i <inputfile> -o <outputfile>')
         sys.exit(2)
@@ -29,10 +28,7 @@ def main(argv):
             inputfile = arg
         elif opt in ("-o", "--ofile"):
             outputfile = arg
-        elif opt in ("-s", "--start-position"):
-            startpos = arg
     input_files = inputfile.split(",")
-    start_pos = startpos.split(",")
 
     plane = field_plane.plane([])
     shift = 0
@@ -48,8 +44,16 @@ def main(argv):
             plane = plane.delete_points(field_point.y_equals(shift))
         plane.points += temp_plane.points
 
-    for p in plane.select_points(field_point.y_equals(5075)).points:
-        p.print()
+    unique_y = plane.unique_coordinates(field_point.y_coordinate())
+    unique_y = sorted(unique_y)
+    if len(input_files) > 1:
+        plane = plane.delete_points(field_point.y_equals(unique_y[-1]))
+    unique_x = plane.unique_coordinates(field_point.x_coordinate())
+    unique_x = sorted(unique_x)
+    unique_y = plane.unique_coordinates(field_point.y_coordinate())
+    unique_y = sorted(unique_y)
+    unique_z = plane.unique_coordinates(field_point.z_coordinate())
+    unique_z = sorted(unique_z)
 
     plane = plane * 1000.0
     plane.voltage_to_field_bx(23.16, 136.5)
@@ -64,6 +68,16 @@ def main(argv):
     by_values = plane.get_values(field_point.by_field())
     bz_values = plane.get_values(field_point.bz_field())
     pp = PdfPages(outputfile)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    plt.text(0.1, 0.85, 'Measurement summary', horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
+    plt.text(0.1, 0.75, 'N points ' + str(len(plane.points)), horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
+    plt.text(0.1, 0.65, 'x = ' + str(unique_x[0]) + " - " + str(unique_x[-1]), horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
+    plt.text(0.1, 0.55, 'y = ' + str(unique_y[0]) + " - " + str(unique_y[-1]), horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
+    plt.text(0.1, 0.45, 'z = ' + str(unique_z[0]) + " - " + str(unique_z[-1]), horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
+    pp.savefig(fig)
+
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
     ax.plot_trisurf(x_values, y_values, bx_values, None, cmap=plt.cm.YlGnBu_r)
     ax.view_init(elev=45, azim=-120)
@@ -101,6 +115,25 @@ def main(argv):
         plt.title('y=' + str(y))
         ax = plt.gca()
         ax.set_xlim([0.0, 3000])
+        ax.set_ylim([-6, 15])
+        plt.legend()
+        pp.savefig(fig)
+
+    for x in unique_x:
+        slice = plane.select_points(field_point.x_equals(x))
+        y_values = slice.get_values(field_point.y_coordinate())
+        bx_values = slice.get_values(field_point.bx_field())
+        by_values = slice.get_values(field_point.by_field())
+        bz_values = slice.get_values(field_point.bz_field())
+        fig = plt.figure()
+        plt.plot(y_values, bx_values, label="Bx")
+        plt.plot(y_values, by_values, label="By")
+        plt.plot(y_values, bz_values, label="Bz")
+        plt.xlabel('y (mm)')
+        plt.ylabel('B (kGs)')
+        plt.title('y=' + str(x))
+        ax = plt.gca()
+        ax.set_xlim([0.0, 6000])
         ax.set_ylim([-6, 15])
         plt.legend()
         pp.savefig(fig)

@@ -52,5 +52,5 @@ pip install matplotlib
 ````
 ### Usage
 ````
-/path/to/your/bmn_magnetic_field/python/draw.sh -i <file1>,<file2>,...,<fileN> -s <start_pos1>,<start_pos2>,...,<start_posN> -o <output_file.pdf>
+/path/to/your/bmn_magnetic_field/python/draw.sh -i <file1>,<file2>,...,<fileN> -o <output_file.pdf>
 ````
