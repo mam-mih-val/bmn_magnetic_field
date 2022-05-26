@@ -44,6 +44,29 @@ struct z_equals{
     return fabs(p.z - z) < dz;
   };
 };
+class coordinate_x{
+public:
+  explicit coordinate_x(double x) : x_(x) {}
+  virtual ~coordinate_x() = default;
+  coordinate_x& operator=(double x){ x_ = x; return *this;}
+  bool operator()( field_point p ) const{
+    return fabs( p.x -x_ ) < std::numeric_limits<float>::min();
+  }
+private:
+  double x_;
+};
+class coordinate_y{
+public:
+  coordinate_y() = default;
+  explicit coordinate_y(double y) : y_(y) {}
+  virtual ~coordinate_y() = default;
+  coordinate_y& operator=(double y){ y_ = y; return *this; }
+  bool operator()( field_point p ) const{
+    return fabs( p.y - y_) < std::numeric_limits<float>::min();
+  }
+private:
+  double y_=0;
+};
 // Functors to access the field components
 struct bx_field{ double operator()(field_point p){ return p.bx; }; };
 struct by_field{ double operator()(field_point p){ return p.by; }; };

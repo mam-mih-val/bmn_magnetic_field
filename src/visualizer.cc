@@ -13,7 +13,9 @@
 #include "visualizer.h"
 
 void Visualizer::SaveToPDF(const FieldPlane &plane,
-                           const std::string &out_file_name) {
+                           const std::string &out_file_name,
+                           std::vector<double> y_axis_range) {
+  assert(y_axis_range.size()==2);
   auto n_points = plane.GetPoints().size();
   auto unique_x_coordinates = plane.GetUniqueCoordinates( x_coordinate() );
   auto unique_y_coordinates = plane.GetUniqueCoordinates( y_coordinate() );
@@ -94,8 +96,8 @@ void Visualizer::SaveToPDF(const FieldPlane &plane,
     stack->Add( proj_bz, "l" );
     c.cd();
     stack->Draw( "al" );
-    stack->GetHistogram()->SetMinimum( -6 );
-    stack->GetHistogram()->SetMaximum( 15 );
+    stack->GetHistogram()->SetMinimum( y_axis_range[0] );
+    stack->GetHistogram()->SetMaximum( y_axis_range[1] );
     stack->Draw( "al" );
     c.BuildLegend( 0.1, 0.75, 0.3, 0.95 );
     c.Print(out_file_name.c_str(), std::data("Title:"+page_title));
@@ -127,8 +129,8 @@ void Visualizer::SaveToPDF(const FieldPlane &plane,
     stack->Add( proj_bz, "l" );
     c.cd();
     stack->Draw( "al" );
-    stack->GetHistogram()->SetMinimum( -6 );
-    stack->GetHistogram()->SetMaximum( 15 );
+    stack->GetHistogram()->SetMinimum( y_axis_range[0] );
+    stack->GetHistogram()->SetMaximum( y_axis_range[1] );
     stack->Draw( "al" );
     c.BuildLegend( 0.1, 0.75, 0.3, 0.95 );
     c.Print(out_file_name.c_str(), std::data("Title:"+page_title));
@@ -186,7 +188,7 @@ void Visualizer::SaveToRoot(const FieldPlane &plane,
   file_out->mkdir("x_projections/Bz");
   for( auto y : unique_y_coordinates ){
     // Getting the vector of points with current y coordinate with tolerance of 10 mm (because '==' comparison doesn't make sence for doubles)
-    auto slice = FieldPlane(plane.SelectPoints( y_equals{y, 10} ));
+    auto slice = FieldPlane(plane.SelectPoints( y_equals{y, 5} ));
     // Converting the points into drawable TGraph
     std::stringstream stream_y;
     stream_y << std::fixed << std::setprecision(2) << y;
@@ -214,7 +216,7 @@ void Visualizer::SaveToRoot(const FieldPlane &plane,
 
   for( auto x : unique_x_coordinates ){
     // Getting the vector of points with current x coordinate with tolerance of 10 mm (because '==' comparison doesn't make sence for doubles)
-    auto slice = FieldPlane(plane.SelectPoints( x_equals{x, 10} ));
+    auto slice = FieldPlane(plane.SelectPoints( x_equals{x, 5} ));
     // Converting the points into drawable TGraph
     std::stringstream stream_x;
     stream_x << std::fixed << std::setprecision(2) << x;

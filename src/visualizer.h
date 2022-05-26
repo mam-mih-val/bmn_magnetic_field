@@ -10,7 +10,7 @@
 
 class Visualizer {
 public:
-  static void SaveToPDF(const FieldPlane& plane, const std::string& file_name);
+  static void SaveToPDF(const FieldPlane& plane, const std::string& file_name, std::vector<double> y_axis_range={-6.0, 15.0});
   static void SaveToRoot(const FieldPlane& plane, const std::string& file_name);
 private:
   Visualizer() = default;

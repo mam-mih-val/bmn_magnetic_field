@@ -76,3 +76,24 @@ std::vector<field_point> DataParser::ParseOldData(std::string file_name) {
   }
   return field_points;
 }
+FieldPlane DataParser::ParsePlane(std::vector<std::string> file_names) {
+  // Parsing the input files
+  std::vector<FieldPlane> planes;
+  for( const auto& name : file_names){
+    auto points = DataParser::ParseData( name );
+    planes.emplace_back(points);
+  }
+  // Merging all the points into one FieldPlane object
+  coordinate_y y;
+  auto plane = planes.front();
+  for( int i=1; i<planes.size(); i++ ){
+    auto p = planes[i];
+    auto unique_y = plane.GetUniqueYCoordinates();
+    double sum_shift = *--unique_y.end();
+    plane.DeletePoints( y_equals{*--unique_y.end(), 5} );
+    p.ShiftY(sum_shift);
+    std::cout << file_names[i] << " >> y = " << sum_shift << std::endl;
+    plane.Append(p);
+  }
+  return plane;
+}

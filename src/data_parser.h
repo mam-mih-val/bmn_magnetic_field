@@ -13,11 +13,13 @@
 #include <cassert>
 
 #include "field_point.h"
+#include "field_plane.h"
 
 class DataParser {
 public:
   // The method reads the field points from the data
   static std::vector<field_point> ParseData( std::string file_name );
+  static FieldPlane ParsePlane( std::vector<std::string> file_names );
   static std::vector<field_point> ParseOldData( std::string file_name );
   // The method sorts the large heap of field points into smaller ones so that
   // each heap will be unique on this coordinate.
