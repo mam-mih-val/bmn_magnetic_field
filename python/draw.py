@@ -9,6 +9,7 @@ import numpy as np
 import data_parser
 import field_point
 import field_plane
+import progress_bar
 from matplotlib.backends.backend_pdf import PdfPages
 
 
@@ -39,6 +40,7 @@ def main(argv):
         unique_y = sorted(unique_y)
         if i > 0:
             shift = unique_y[-1]
+        print("The start position of the points is y =", shift)
         temp_plane.shift_y(float(shift))
         if len(input_files) > 1:
             plane = plane.delete_points(field_point.y_equals(shift))
@@ -99,7 +101,10 @@ def main(argv):
     ax.set_ylabel('Y')
     ax.set_zlabel('Bz')
     pp.savefig(fig)
-
+    print("Plotting the x-projections of the plane...")
+    pb = progress_bar.bar(40)
+    pb.print()
+    idx = 0
     for y in unique_y:
         slice = plane.select_points(field_point.y_equals(y))
         x_values = slice.get_values(field_point.x_coordinate())
@@ -118,7 +123,16 @@ def main(argv):
         ax.set_ylim([-6, 15])
         plt.legend()
         pp.savefig(fig)
+        plt.cla()
+        plt.clf()
+        plt.close(fig)
+        idx += 1
+        pb.update(float(idx / len(unique_y)))
 
+    print("Plotting the y-projections of the plane...")
+    pb = progress_bar.bar(40)
+    pb.print()
+    idx = 0
     for x in unique_x:
         slice = plane.select_points(field_point.x_equals(x))
         y_values = slice.get_values(field_point.y_coordinate())
@@ -137,8 +151,14 @@ def main(argv):
         ax.set_ylim([-6, 15])
         plt.legend()
         pp.savefig(fig)
+        plt.cla()
+        plt.clf()
+        plt.close(fig)
+        pb.update(float(idx / len(unique_x)))
+        idx += 1
 
     pp.close()
+    print("All the info was saved in file "+outputfile)
 
 
 if __name__ == "__main__":
