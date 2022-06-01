@@ -145,7 +145,7 @@ def main(argv):
         plt.plot(y_values, bz_values, label="Bz")
         plt.xlabel('y (mm)')
         plt.ylabel('B (kGs)')
-        plt.title('y=' + str(x))
+        plt.title('x=' + str(x))
         ax = plt.gca()
         ax.set_xlim([0.0, 6000])
         ax.set_ylim([-6, 15])
