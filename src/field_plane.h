@@ -62,6 +62,12 @@ public:
     return selected;
   }
   template <typename T>
+  FieldPlane operator[](T selection) const {
+    auto selected = this->SelectPoints(selection);
+    return FieldPlane(selected);
+  }
+
+  template <typename T>
   void DeletePoints(T selection) {
     std::vector<field_point> selected;
     for( auto p : points_ ){ if( !selection(p) ){ selected.push_back(p); } }
@@ -114,8 +120,9 @@ public:
       graph->SetTitle(title.c_str());
       return graph;
   };
-  void ShiftX(double shift){ for( auto &p : points_ ){ p.x+=shift; } this->FillUniqueCoordinates(); }
-  void ShiftY(double shift){ for( auto &p : points_ ){ p.y+=shift; } this->FillUniqueCoordinates(); }
+  void ShiftX(double shift){ for( auto &p : points_ ){ p.x+=shift; } }
+  void ShiftY(double shift){ for( auto &p : points_ ){ p.y+=shift; } }
+  void ShiftZ(double shift){ for( auto &p : points_ ){ p.z+=shift; } }
   void Append(const FieldPlane& other){
     for( auto &p : other.points_ ){
       points_.push_back(p);

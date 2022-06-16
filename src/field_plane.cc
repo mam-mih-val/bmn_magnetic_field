@@ -6,75 +6,84 @@
 #include "field_plane.h"
 
 FieldPlane operator+( FieldPlane a, FieldPlane b ){
-  if( a.points_.size() != b.points_.size() )
-    throw std::runtime_error( "Data Sets have different length" );
+  auto unique_x = a.GetUniqueCoordinates(x_coordinate());
+  auto unique_y = a.GetUniqueCoordinates(y_coordinate());
+  auto unique_z = a.GetUniqueCoordinates(z_coordinate());
+
   FieldPlane result;
-  for( size_t i=0; i<a.points_.size(); i++ ){
-    if( a.points_[i].x != b.points_[i].x )
-      throw std::runtime_error( "Data Sets have different X coordinates" );
-    if( a.points_[i].y != b.points_[i].y )
-      throw std::runtime_error( "Data Sets have different Y coordinates" );
-    if( a.points_[i].z != b.points_[i].z )
-      throw std::runtime_error( "Data Sets have different Z coordinates" );
 
-    auto x = a.points_[i].x;
-    auto y = a.points_[i].y;
-    auto z = a.points_[i].z;
+  equality_function_x xx;
+  equality_function_y yy;
+  for( auto y : unique_y ){
+    for( auto x : unique_x ){
+      auto a_xyz = a[xx=x][yy=y];
+      auto b_xyz = b[xx=x][yy=y];
+      if( a_xyz.points_.size() != 1 )
+        throw std::runtime_error( "The field data in the first data set at x="+std::to_string(x)+", y="+std::to_string(y)+" is not unique" );
+      if( b_xyz.points_.size() != 1 )
+        throw std::runtime_error( "The field data in the second data set at x="+std::to_string(x)+", y="+std::to_string(y)+" is not unique" );
+      auto z = a_xyz.points_[0].z;
+      auto bx = a_xyz.points_[0].bx + b_xyz.points_[0].bx;
+      auto by = a_xyz.points_[0].by + b_xyz.points_[0].by;
+      auto bz = a_xyz.points_[0].bz + b_xyz.points_[0].bz;
 
-    auto bx = a.points_[i].bx + b.points_[i].bx;
-    auto by = a.points_[i].by + b.points_[i].by;
-    auto bz = a.points_[i].bz + b.points_[i].bz;
-
-    result.points_.push_back( {x, y, z, bx, by, bz} );
+      result.points_.push_back( {x, y, z, bx, by, bz} );
+    }
   }
   return result;
 }
 FieldPlane operator-( FieldPlane a, FieldPlane b ){
-  if( a.points_.size() != b.points_.size() )
-    throw std::runtime_error( "Data Sets have different length" );
+  auto unique_x = a.GetUniqueCoordinates(x_coordinate());
+  auto unique_y = a.GetUniqueCoordinates(y_coordinate());
+  auto unique_z = a.GetUniqueCoordinates(z_coordinate());
+
   FieldPlane result;
-  for( size_t i=0; i<a.points_.size(); i++ ){
-    if( a.points_[i].x != b.points_[i].x )
-      throw std::runtime_error( "Data Sets have different X coordinates" );
-    if( a.points_[i].y != b.points_[i].y )
-      throw std::runtime_error( "Data Sets have different Y coordinates" );
-    if( a.points_[i].z != b.points_[i].z )
-      throw std::runtime_error( "Data Sets have different Z coordinates" );
 
-    auto x = a.points_[i].x;
-    auto y = a.points_[i].y;
-    auto z = a.points_[i].z;
+  equality_function_x xx;
+  equality_function_y yy;
+  for( auto y : unique_y ){
+    for( auto x : unique_x ){
+      auto a_xyz = a[xx=x][yy=y];
+      auto b_xyz = b[xx=x][yy=y];
+      if( a_xyz.points_.size() != 1 )
+        throw std::runtime_error( "The field data in the first data set at x="+std::to_string(x)+", y="+std::to_string(y)+" is not unique" );
+      if( b_xyz.points_.size() != 1 )
+        throw std::runtime_error( "The field data in the second data set at x="+std::to_string(x)+", y="+std::to_string(y)+" is not unique" );
+      auto z = a_xyz.points_[0].z;
+      auto bx = a_xyz.points_[0].bx - b_xyz.points_[0].bx;
+      auto by = a_xyz.points_[0].by - b_xyz.points_[0].by;
+      auto bz = a_xyz.points_[0].bz - b_xyz.points_[0].bz;
 
-    auto bx = a.points_[i].bx - b.points_[i].bx;
-    auto by = a.points_[i].by - b.points_[i].by;
-    auto bz = a.points_[i].bz - b.points_[i].bz;
-
-    result.points_.push_back( {x, y, z, bx, by, bz} );
+      result.points_.push_back( {x, y, z, bx, by, bz} );
+    }
   }
   return result;
 }
 
 FieldPlane operator*( FieldPlane a, FieldPlane b ){
-  if( a.points_.size() != b.points_.size() )
-    throw std::runtime_error( "Data Sets have different length" );
+  auto unique_x = a.GetUniqueCoordinates(x_coordinate());
+  auto unique_y = a.GetUniqueCoordinates(y_coordinate());
+  auto unique_z = a.GetUniqueCoordinates(z_coordinate());
+
   FieldPlane result;
-  for( size_t i=0; i<a.points_.size(); i++ ){
-    if( a.points_[i].x != b.points_[i].x )
-      throw std::runtime_error( "Data Sets have different X coordinates" );
-    if( a.points_[i].y != b.points_[i].y )
-      throw std::runtime_error( "Data Sets have different Y coordinates" );
-    if( a.points_[i].z != b.points_[i].z )
-      throw std::runtime_error( "Data Sets have different Z coordinates" );
 
-    auto x = a.points_[i].x;
-    auto y = a.points_[i].y;
-    auto z = a.points_[i].z;
+  equality_function_x xx;
+  equality_function_y yy;
+  for( auto y : unique_y ){
+    for( auto x : unique_x ){
+      auto a_xyz = a[xx=x][yy=y];
+      auto b_xyz = b[xx=x][yy=y];
+      if( a_xyz.points_.size() != 1 )
+        throw std::runtime_error( "The field data in the first data set at x="+std::to_string(x)+", y="+std::to_string(y)+" is not unique" );
+      if( b_xyz.points_.size() != 1 )
+        throw std::runtime_error( "The field data in the second data set at x="+std::to_string(x)+", y="+std::to_string(y)+" is not unique" );
+      auto z = a_xyz.points_[0].z;
+      auto bx = a_xyz.points_[0].bx * b_xyz.points_[0].bx;
+      auto by = a_xyz.points_[0].by * b_xyz.points_[0].by;
+      auto bz = a_xyz.points_[0].bz * b_xyz.points_[0].bz;
 
-    auto bx = a.points_[i].bx * b.points_[i].bx;
-    auto by = a.points_[i].by * b.points_[i].by;
-    auto bz = a.points_[i].bz * b.points_[i].bz;
-
-    result.points_.push_back( {x, y, z, bx, by, bz} );
+      result.points_.push_back( {x, y, z, bx, by, bz} );
+    }
   }
   return result;
 }
@@ -111,26 +120,29 @@ FieldPlane operator*( double a, const FieldPlane& b ){
 }
 
 FieldPlane operator/( FieldPlane a, FieldPlane b ){
-  if( a.points_.size() != b.points_.size() )
-    throw std::runtime_error( "Data Sets have different length" );
+  auto unique_x = a.GetUniqueCoordinates(x_coordinate());
+  auto unique_y = a.GetUniqueCoordinates(y_coordinate());
+  auto unique_z = a.GetUniqueCoordinates(z_coordinate());
+
   FieldPlane result;
-  for( size_t i=0; i<a.points_.size(); i++ ){
-    if( a.points_[i].x != b.points_[i].x )
-      throw std::runtime_error( "Data Sets have different X coordinates" );
-    if( a.points_[i].y != b.points_[i].y )
-      throw std::runtime_error( "Data Sets have different Y coordinates" );
-    if( a.points_[i].z != b.points_[i].z )
-      throw std::runtime_error( "Data Sets have different Z coordinates" );
 
-    auto x = a.points_[i].x;
-    auto y = a.points_[i].y;
-    auto z = a.points_[i].z;
+  equality_function_x xx;
+  equality_function_y yy;
+  for( auto y : unique_y ){
+    for( auto x : unique_x ){
+      auto a_xyz = a[xx=x][yy=y];
+      auto b_xyz = b[xx=x][yy=y];
+      if( a_xyz.points_.size() != 1 )
+        throw std::runtime_error( "The field data in the first data set at x="+std::to_string(x)+", y="+std::to_string(y)+" is not unique" );
+      if( b_xyz.points_.size() != 1 )
+        throw std::runtime_error( "The field data in the second data set at x="+std::to_string(x)+", y="+std::to_string(y)+" is not unique" );
+      auto z = a_xyz.points_[0].z;
+      auto bx = a_xyz.points_[0].bx / b_xyz.points_[0].bx;
+      auto by = a_xyz.points_[0].by / b_xyz.points_[0].by;
+      auto bz = a_xyz.points_[0].bz / b_xyz.points_[0].bz;
 
-    auto bx = a.points_[i].bx / b.points_[i].bx;
-    auto by = a.points_[i].by / b.points_[i].by;
-    auto bz = a.points_[i].bz / b.points_[i].bz;
-
-    result.points_.push_back( {x, y, z, bx, by, bz} );
+      result.points_.push_back( {x, y, z, bx, by, bz} );
+    }
   }
   return result;
 }

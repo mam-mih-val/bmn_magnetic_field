@@ -44,28 +44,58 @@ struct z_equals{
     return fabs(p.z - z) < dz;
   };
 };
-class coordinate_x{
+
+template<typename X>
+class equality_selection{
 public:
-  explicit coordinate_x(double x) : x_(x) {}
-  virtual ~coordinate_x() = default;
-  coordinate_x& operator=(double x){ x_ = x; return *this;}
+  equality_selection() {}
+  equality_selection(double x) : x_(x) {}
+  ~equality_selection() {}
+  equality_selection & operator=(double x){ x_ = x; return *this;}
   bool operator()( field_point p ) const{
-    return fabs( p.x -x_ ) < std::numeric_limits<float>::min();
+    return fabs( coordinate_(p) -x_ ) < 1e-3;
   }
 private:
-  double x_;
+  X coordinate_{};
+  double x_=0;
 };
-class coordinate_y{
+
+class equality_function_x {
 public:
-  coordinate_y() = default;
-  explicit coordinate_y(double y) : y_(y) {}
-  virtual ~coordinate_y() = default;
-  coordinate_y& operator=(double y){ y_ = y; return *this; }
+  equality_function_x() = default;
+  explicit equality_function_x(double x) : x_(x) {}
+  virtual ~equality_function_x() = default;
+  equality_function_x & operator=(double x){ x_ = x; return *this;}
   bool operator()( field_point p ) const{
-    return fabs( p.y - y_) < std::numeric_limits<float>::min();
+    return fabs( p.x -x_ ) < 1e-3;
+  }
+private:
+  double x_=0;
+};
+class equality_function_y {
+public:
+  equality_function_y() = default;
+  explicit equality_function_y(double y) : y_(y) {}
+  virtual ~equality_function_y() = default;
+  equality_function_y & operator=(double y){ y_ = y; return *this; }
+  bool operator()( field_point p ) const{
+    return fabs( p.y - y_) < 1e-3;
   }
 private:
   double y_=0;
+};
+class equality_function_z {
+public:
+  equality_function_z() = default;
+  explicit equality_function_z(double z) : z_(z) {}
+  virtual ~equality_function_z() = default;
+  equality_function_z & operator=(double z){
+    z_ = z; return *this; }
+  bool operator()( field_point p ) const{
+    return fabs( p.z - z_) < 1e-3;
+  }
+private:
+  double z_ =0;
 };
 // Functors to access the field components
 struct bx_field{ double operator()(field_point p){ return p.bx; }; };

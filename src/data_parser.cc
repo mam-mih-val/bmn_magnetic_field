@@ -84,7 +84,7 @@ FieldPlane DataParser::ParsePlane(std::vector<std::string> file_names) {
     planes.emplace_back(points);
   }
   // Merging all the points into one FieldPlane object
-  coordinate_y y;
+  equality_function_y y;
   auto plane = planes.front();
   for( int i=1; i<planes.size(); i++ ){
     auto p = planes[i];

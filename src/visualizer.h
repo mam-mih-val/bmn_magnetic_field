@@ -11,6 +11,7 @@
 class Visualizer {
 public:
   static void SaveToPDF(const FieldPlane& plane, const std::string& file_name, std::vector<double> y_axis_range={-6.0, 15.0});
+  static void ComparePlanesPDF(const FieldPlane& plane1, const FieldPlane& plane2, const std::string& file_name, std::vector<double> y_axis_range={-6.0, 15.0});
   static void SaveToRoot(const FieldPlane& plane, const std::string& file_name);
 private:
   Visualizer() = default;

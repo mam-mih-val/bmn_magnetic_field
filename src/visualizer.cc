@@ -80,14 +80,14 @@ void Visualizer::SaveToPDF(const FieldPlane &plane,
     // Converting the points into drawable TGraph
     std::stringstream stream_y;
     stream_y << std::fixed << std::setprecision(2) << y;
-    std::string y_title = "y_"+stream_y.str();
+    std::string y_title = "z_"+stream_y.str();
 
     std::string page_title = "y="+stream_y.str();
-    auto proj_bx = slice.GetGraph( "y_"+stream_y.str(), "B_{x}", x_coordinate(), bx_field() );
+    auto proj_bx = slice.GetGraph( "z_"+stream_y.str(), "B_{x}", x_coordinate(), bx_field() );
     proj_bx->SetLineColor( kBlue );
-    auto proj_by = slice.GetGraph( "y_"+stream_y.str(), "B_{y}", x_coordinate(), by_field() );
+    auto proj_by = slice.GetGraph( "z_"+stream_y.str(), "B_{y}", x_coordinate(), by_field() );
     proj_by->SetLineColor( kRed );
-    auto proj_bz = slice.GetGraph( "y_"+stream_y.str(), "B_{z}", x_coordinate(), bz_field() );
+    auto proj_bz = slice.GetGraph( "z_"+stream_y.str(), "B_{z}", x_coordinate(), bz_field() );
     proj_bz->SetLineColor( kGreen+2 );
     auto stack = new TMultiGraph();
     stack->SetTitle( std::data("y="+stream_y.str()+" mm;x (mm); B_{i} (kGs)") );
@@ -116,14 +116,14 @@ void Visualizer::SaveToPDF(const FieldPlane &plane,
     std::string x_title = "x_"+ stream_x.str();
 
     std::string page_title = "x="+ stream_x.str();
-    auto proj_bx = slice.GetGraph( "y_"+ stream_x.str(), "B_{x}", y_coordinate(), bx_field() );
+    auto proj_bx = slice.GetGraph( "z_"+ stream_x.str(), "B_{x}", y_coordinate(), bx_field() );
     proj_bx->SetLineColor( kBlue );
-    auto proj_by = slice.GetGraph( "y_"+ stream_x.str(), "B_{x}", y_coordinate(), by_field() );
+    auto proj_by = slice.GetGraph( "z_"+ stream_x.str(), "B_{x}", y_coordinate(), by_field() );
     proj_by->SetLineColor( kRed );
-    auto proj_bz = slice.GetGraph( "y_"+ stream_x.str(), "B_{z}", y_coordinate(), bz_field() );
+    auto proj_bz = slice.GetGraph( "z_"+ stream_x.str(), "B_{z}", y_coordinate(), bz_field() );
     proj_bz->SetLineColor( kGreen+2 );
     auto stack = new TMultiGraph();
-    stack->SetTitle( std::data("y="+ stream_x.str()+" mm;x (mm); B_{i} (kGs)") );
+    stack->SetTitle( std::data("x="+ stream_x.str()+" mm;y (mm); B_{i} (kGs)") );
     stack->Add( proj_bx, "l" );
     stack->Add( proj_by, "l" );
     stack->Add( proj_bz, "l" );
@@ -192,14 +192,14 @@ void Visualizer::SaveToRoot(const FieldPlane &plane,
     // Converting the points into drawable TGraph
     std::stringstream stream_y;
     stream_y << std::fixed << std::setprecision(2) << y;
-    std::string y_title = "y_"+stream_y.str();
+    std::string y_title = "z_"+stream_y.str();
 
     std::string page_title = "y="+stream_y.str();
-    auto proj_bx = slice.GetGraph( "y_"+stream_y.str(), "B_{x};x (mm)", x_coordinate(), bx_field() );
+    auto proj_bx = slice.GetGraph( "z_"+stream_y.str(), "B_{x};x (mm)", x_coordinate(), bx_field() );
     proj_bx->SetLineColor( kBlue );
-    auto proj_by = slice.GetGraph( "y_"+stream_y.str(), "B_{y}; x (mm)", x_coordinate(), by_field() );
+    auto proj_by = slice.GetGraph( "z_"+stream_y.str(), "B_{y}; x (mm)", x_coordinate(), by_field() );
     proj_by->SetLineColor( kRed );
-    auto proj_bz = slice.GetGraph( "y_"+stream_y.str(), "B_{z}; x (mm)", x_coordinate(), bz_field() );
+    auto proj_bz = slice.GetGraph( "z_"+stream_y.str(), "B_{z}; x (mm)", x_coordinate(), bz_field() );
     proj_bz->SetLineColor( kGreen+2 );
     file_out->cd("x_projections/Bx");
     proj_bx->Write();
@@ -223,11 +223,11 @@ void Visualizer::SaveToRoot(const FieldPlane &plane,
     std::string x_title = "x_"+ stream_x.str();
 
     std::string page_title = "x="+ stream_x.str();
-    auto proj_bx = slice.GetGraph( "y_"+ stream_x.str(), "B_{x}", y_coordinate(), bx_field() );
+    auto proj_bx = slice.GetGraph( "z_"+ stream_x.str(), "B_{x}", y_coordinate(), bx_field() );
     proj_bx->SetLineColor( kBlue );
-    auto proj_by = slice.GetGraph( "y_"+ stream_x.str(), "B_{x}", y_coordinate(), by_field() );
+    auto proj_by = slice.GetGraph( "z_"+ stream_x.str(), "B_{x}", y_coordinate(), by_field() );
     proj_by->SetLineColor( kRed );
-    auto proj_bz = slice.GetGraph( "y_"+ stream_x.str(), "B_{z}", y_coordinate(), bz_field() );
+    auto proj_bz = slice.GetGraph( "z_"+ stream_x.str(), "B_{z}", y_coordinate(), bz_field() );
     proj_bz->SetLineColor( kGreen+2 );
     file_out->cd("y_projections/Bx");
     proj_bx->Write();
@@ -237,4 +237,116 @@ void Visualizer::SaveToRoot(const FieldPlane &plane,
     proj_bz->Write();
   }
   file_out->Close();
+}
+void Visualizer::ComparePlanesPDF(const FieldPlane &plane1,
+                                  const FieldPlane &plane2,
+                                  const std::string &out_file_name,
+                                  std::vector<double> y_axis_range) {
+  auto unique_x_coordinates = plane1.GetUniqueCoordinates( x_coordinate() );
+  auto unique_y_coordinates = plane1.GetUniqueCoordinates( y_coordinate() );
+  auto unique_z_coordinates = plane1.GetUniqueCoordinates( z_coordinate() );
+
+  auto c = TCanvas("2D_pictures", "", 1920, 1080);
+  c.Print( std::data(out_file_name+"[") );
+  TLatex Tl;
+
+  equality_function_y _y;
+  equality_function_x _x;
+  c.cd();
+  Tl.DrawLatex(0.1,0.7,"Projections on x-axis");
+
+  for( auto y : unique_y_coordinates ){
+    // Getting the vector of points with current y coordinate with tolerance of 10 mm (because '==' comparison doesn't make sence for doubles)
+    auto slice1 = FieldPlane(plane1.SelectPoints(_y = y ));
+    auto slice2 = FieldPlane(plane2.SelectPoints(_y = y ));
+    // Converting the points into drawable TGraph
+    std::stringstream stream_y;
+    stream_y << std::fixed << std::setprecision(2) << y;
+    std::string y_title = "_y"+stream_y.str();
+
+    std::string page_title = "y="+stream_y.str();
+    auto proj_bx_1 = slice1.GetGraph( "first_y_"+stream_y.str(), "B_{x}", x_coordinate(), bx_field() );
+    proj_bx_1->SetLineColor( kBlue );
+    auto proj_bx_2 = slice2.GetGraph( "second_y_"+stream_y.str(), "B_{x}", x_coordinate(), bx_field() );
+    proj_bx_2->SetLineColor( kBlue );
+    proj_bx_2->SetLineStyle( 2 );
+
+    auto proj_by_1 = slice1.GetGraph( "first_y_"+stream_y.str(), "B_{y}", x_coordinate(), by_field() );
+    proj_by_1->SetLineColor( kRed );
+    auto proj_by_2 = slice2.GetGraph( "second_y_"+stream_y.str(), "B_{y}", x_coordinate(), by_field() );
+    proj_by_2->SetLineColor( kRed );
+    proj_by_2->SetLineStyle( 2 );
+
+    auto proj_bz_1 = slice1.GetGraph( "first_y_"+stream_y.str(), "B_{z}", x_coordinate(), bz_field() );
+    proj_bz_1->SetLineColor( kGreen+2 );
+    auto proj_bz_2 = slice2.GetGraph( "second_y_"+stream_y.str(), "B_{z}", x_coordinate(), bz_field() );
+    proj_bz_2->SetLineColor( kGreen+2 );
+    proj_bz_2->SetLineStyle( 2 );
+
+    auto stack = new TMultiGraph();
+    stack->SetTitle( std::data("y="+stream_y.str()+" mm;x (mm); B_{i} (kGs)") );
+    stack->Add(proj_bx_1, "l" );
+    stack->Add(proj_by_1, "l" );
+    stack->Add( proj_bz_1, "l" );
+    stack->Add(proj_bx_2, "l" );
+    stack->Add(proj_by_2, "l" );
+    stack->Add( proj_bz_2, "l" );
+    c.cd();
+    stack->Draw( "al" );
+    stack->GetHistogram()->SetMinimum( y_axis_range[0] );
+    stack->GetHistogram()->SetMaximum( y_axis_range[1] );
+    stack->Draw( "al" );
+    c.BuildLegend( 0.1, 0.75, 0.3, 0.95 );
+    c.Print(out_file_name.c_str(), std::data("Title:"+page_title));
+  }
+  c.cd(0);
+  c.Clear();
+  Tl.DrawLatex(0.1,0.7,"Projections on y-axis");
+  c.Print(std::data(out_file_name), "Title:y projections");
+
+  for( auto x : unique_x_coordinates ){
+    // Getting the vector of points with current y coordinate with tolerance of 10 mm (because '==' comparison doesn't make sence for doubles)
+    auto slice1 = FieldPlane(plane1.SelectPoints(_x = x ));
+    auto slice2 = FieldPlane(plane2.SelectPoints(_x = x ));
+    // Converting the points into drawable TGraph
+    std::stringstream stream_x;
+    stream_x << std::fixed << std::setprecision(2) << x;
+    std::string y_title = "x_"+ stream_x.str();
+
+    std::string page_title = "x="+ stream_x.str();
+    auto proj_bx_1 = slice1.GetGraph( "first_x_"+ stream_x.str(), "B_{x}", y_coordinate(), bx_field() );
+    proj_bx_1->SetLineColor( kBlue );
+    auto proj_bx_2 = slice2.GetGraph( "second_x_"+ stream_x.str(), "B_{x}", y_coordinate(), bx_field() );
+    proj_bx_2->SetLineColor( kBlue );
+    proj_bx_2->SetLineStyle( 2 );
+
+    auto proj_by_1 = slice1.GetGraph( "first_x_"+ stream_x.str(), "B_{y}", y_coordinate(), by_field() );
+    proj_by_1->SetLineColor( kRed );
+    auto proj_by_2 = slice2.GetGraph( "second_x_"+ stream_x.str(), "B_{y}", y_coordinate(), by_field() );
+    proj_by_2->SetLineColor( kRed );
+    proj_by_2->SetLineStyle( 2 );
+
+    auto proj_bz_1 = slice1.GetGraph( "first_x_"+ stream_x.str(), "B_{z}", y_coordinate(), bz_field() );
+    proj_bz_1->SetLineColor( kGreen+2 );
+    auto proj_bz_2 = slice2.GetGraph( "second_x_"+ stream_x.str(), "B_{z}", y_coordinate(), bz_field() );
+    proj_bz_2->SetLineColor( kGreen+2 );
+    proj_bz_2->SetLineStyle( 2 );
+
+    auto stack = new TMultiGraph();
+    stack->SetTitle( std::data("x="+ stream_x.str()+" mm;y (mm); B_{i} (kGs)") );
+    stack->Add(proj_bx_1, "l" );
+    stack->Add(proj_by_1, "l" );
+    stack->Add( proj_bz_1, "l" );
+    stack->Add(proj_bx_2, "l" );
+    stack->Add(proj_by_2, "l" );
+    stack->Add( proj_bz_2, "l" );
+    c.cd();
+    stack->Draw( "al" );
+    stack->GetHistogram()->SetMinimum( y_axis_range[0] );
+    stack->GetHistogram()->SetMaximum( y_axis_range[1] );
+    stack->Draw( "al" );
+    c.BuildLegend( 0.1, 0.75, 0.3, 0.95 );
+    c.Print(out_file_name.c_str(), std::data("Title:"+page_title));
+  }
+  c.Print(std::data(out_file_name+"]"));
 }
